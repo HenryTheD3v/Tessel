@@ -29,7 +29,7 @@ void DrawGUI(void){
     0.0f,
     size,
     (Color){255, 255, 255, 128});
-    DrawText("MCTEST", 20, 20, 40, WHITE);
+    DrawText("Tessel", 20, 20, 40, WHITE);
     int fps = GetFPS();
     DrawText(TextFormat("FPS: %d",fps), 20, 60, 40, WHITE);
     DrawText(TextFormat("Yaw: %.3f Pitch: %.3f",yaw, pitch), 20, 100, 40, WHITE);
