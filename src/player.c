@@ -53,6 +53,11 @@ void UpdatePlayer(void){\
     if(IsKeyDown(KEY_LEFT_SHIFT)){
         camera.position.y -= speed * dt;
     }
+    if(IsKeyDown(KEY_R)){
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 0;
+    }
     if(IsKeyDown(KEY_LEFT_CONTROL)){
         speed = speedn * 1.5;
     }else{

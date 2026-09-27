@@ -29,8 +29,8 @@ int main(void)
         BeginMode3D(camera);
 
         UpdatePlayer();
-
         DrawWorld();
+        
         EndMode3D();
         DrawGUI();
         EndDrawing();

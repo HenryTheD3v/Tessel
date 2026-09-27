@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include "lib/gui.h"
 #include "lib/player.h"
+#include "lib/world.h"
 
 static Texture2D crosshair;
 
@@ -26,6 +27,7 @@ void DrawGUI(void){
     int fps = GetFPS();
     DrawText(TextFormat("FPS: %d",fps), 20, 60, 40, WHITE);
     DrawText(TextFormat("Yaw: %.3f Pitch: %.3f",yaw, pitch), 20, 100, 40, WHITE);
+    DrawText(TextFormat("X: %.3f Y: %.3f Z: %.3f",camera.position.x, camera.position.y, camera.position.z), 20, 140, 40, WHITE);
 }
 
 void UnloadGUI(void){
