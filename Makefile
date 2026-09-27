@@ -3,7 +3,7 @@ CC := gcc
 CFLAGS := -Wall -Wextra -std=c11 $(shell pkg-config --cflags raylib)
 LDFLAGS := $(shell pkg-config --libs raylib) -lm
 
-TARGET := game
+TARGET := tessel
 
 SRC := $(wildcard src/*.c)
 OBJ := $(SRC:.c=.o)

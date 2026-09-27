@@ -15,7 +15,7 @@ bool active = true;
 int main(void)
 {
     SetTargetFPS(120);
-    InitWindow(res.x, res.y, "game");
+    InitWindow(res.x, res.y, "Tessel");
     InitGUI();
     InitWorld();
     DisableCursor();
