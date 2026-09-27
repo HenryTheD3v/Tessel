@@ -30,6 +30,9 @@ int main(void)
 
         UpdatePlayer();
         DrawWorld();
+        BeginBlendMode(BLEND_ALPHA);
+        Highlight();
+        EndBlendMode();
         
         EndMode3D();
         DrawGUI();

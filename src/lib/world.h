@@ -12,5 +12,6 @@ void DrawGUI(void);
 void UnloadWorld(void);
 void WorldBreakBlock(void);
 void WorldPlaceBlock(void);
+void Highlight(void);
 
 #endif

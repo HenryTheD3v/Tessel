@@ -14,9 +14,14 @@ float speedn = 65.0f;
 float x = 0;
 float y = 0;
 float z = 0;
+//float velocityX = 0;
+float velocityY = 0.0f;
+//float velocityZ = 0;
+float gravity = 1.0f;
 
 
-void UpdatePlayer(void){\
+
+void UpdatePlayer(void){
     float dt = GetFrameTime();
     Vector2 mouse = GetMouseDelta();
     yaw -= mouse.x * sensitivity;
@@ -82,9 +87,11 @@ void UpdatePlayer(void){\
     if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
         WorldPlaceBlock();
     }
+    camera.position.y += velocityY;
     camera.target.x = camera.position.x + cosf(pitch) * sinf(yaw);
     camera.target.y = camera.position.y + sinf(pitch);
     camera.target.z = camera.position.z + cosf(pitch) * cosf(yaw);
+    if(camera.position.y / 20 )
     if(pitch > 1.5f){
         pitch = 1.5f;
     }

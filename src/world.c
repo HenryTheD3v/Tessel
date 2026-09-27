@@ -35,7 +35,7 @@ Camera3D camera;
 
 void InitWorld(void){
     camera = (Camera3D){ 0 };
-    camera.position = (Vector3){4,5,0};
+    camera.position = (Vector3){7*20,12*20,7*20};
     camera.target = (Vector3){0,1,0};
     camera.up = (Vector3){0,1,0};
     camera.fovy = 120.0f;
@@ -140,7 +140,7 @@ void DrawWorld(void){
 void WorldBreakBlock(void){
     Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
     Vector3 position = ray.position;
-    for (float dist = 0; dist < 160.0f; dist += 0.2f){
+    for (float dist = 0; dist < 120.0f; dist += 0.2f){
         position.x = ray.position.x + ray.direction.x * dist;
         position.y = ray.position.y + ray.direction.y * dist;
         position.z = ray.position.z + ray.direction.z * dist;
@@ -192,6 +192,36 @@ void WorldPlaceBlock(void){
             lastX = blockX;
             lastY = blockY;
             lastZ = blockZ;
+        }
+    }
+}
+void Highlight(void){
+    Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
+    Vector3 position = ray.position;
+    for (float dist = 0; dist < 120.0f; dist += 0.2f){
+        position.x = ray.position.x + ray.direction.x * dist;
+        position.y = ray.position.y + ray.direction.y * dist;
+        position.z = ray.position.z + ray.direction.z * dist;
+
+        int blockX = (int)floorf(position.x / BLOCK_SIZE);
+        int blockY = (int)floorf(position.y / BLOCK_SIZE);
+        int blockZ = (int)floorf(position.z / BLOCK_SIZE);
+
+        if (blockX < 0 || blockX >= WORLD_X ||
+            blockY < 0 || blockY >= WORLD_Y ||
+            blockZ < 0 || blockZ >= WORLD_Z)
+        {
+            continue;
+        }
+
+        if(world_data[blockX][blockY][blockZ] != 0 ){
+            DrawCube((Vector3){blockX * BLOCK_SIZE + BLOCK_SIZE / 2.0f,blockY * BLOCK_SIZE + BLOCK_SIZE / 2.0f,blockZ * BLOCK_SIZE + BLOCK_SIZE / 2.0f},
+                20.1f,
+                20.1f,
+                20.1f,
+                (Color){255, 255, 255, 128}
+            );
+            return;
         }
     }
 }
