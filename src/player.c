@@ -67,6 +67,21 @@ void UpdatePlayer(void){\
     if(IsKeyDown(KEY_ESCAPE)){
         active = false;
     }
+    if(IsKeyDown(KEY_ONE)){
+        selectedBlock = 1;
+    }
+    if(IsKeyDown(KEY_TWO)){
+        selectedBlock = 2;
+    }
+    if(IsKeyDown(KEY_THREE)){
+        selectedBlock = 3;
+    }
+    if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+        WorldBreakBlock();
+    }
+    if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+        WorldPlaceBlock();
+    }
     camera.target.x = camera.position.x + cosf(pitch) * sinf(yaw);
     camera.target.y = camera.position.y + sinf(pitch);
     camera.target.z = camera.position.z + cosf(pitch) * cosf(yaw);

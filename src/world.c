@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <stdio.h>
 #include "lib/world.h"
+#include <math.h>
 
 #define WORLD_X 16
 #define WORLD_Y 16
@@ -12,7 +13,6 @@
 // Grass is 1
 // Dirt is 2
 // Stone is 3
-
 
 // Model Declaration
 Model grass_block;
@@ -28,6 +28,7 @@ Texture2D missing_texture;
 Texture2D stone_texture;
 
 
+int selectedBlock = 1;
 int world_data[WORLD_X][WORLD_Y][WORLD_Z];
 
 Camera3D camera;
@@ -41,10 +42,10 @@ void InitWorld(void){
     camera.projection = CAMERA_PERSPECTIVE;
 
     // Texture Loading
-    Texture2D grasstop_texture = LoadTexture("assets/grasstop.png");
-    Texture2D dirt_texture = LoadTexture("assets/dirt.png");
-    Texture2D missing_texture = LoadTexture("assets/missingtexture.png");
-    Texture2D stone_texture = LoadTexture("assets/stone.png");
+    grasstop_texture = LoadTexture("assets/grasstop.png");
+    dirt_texture = LoadTexture("assets/dirt.png");
+    missing_texture = LoadTexture("assets/missingtexture.png");
+    stone_texture = LoadTexture("assets/stone.png");
 
     // Mesh Declaration
     Mesh grassMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
@@ -136,6 +137,66 @@ void DrawWorld(void){
     }
 }
 
+void WorldBreakBlock(void){
+    Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
+    Vector3 position = ray.position;
+    for (float dist = 0; dist < 160.0f; dist += 0.2f){
+        position.x = ray.position.x + ray.direction.x * dist;
+        position.y = ray.position.y + ray.direction.y * dist;
+        position.z = ray.position.z + ray.direction.z * dist;
+
+        int blockX = (int)floorf(position.x / BLOCK_SIZE);
+        int blockY = (int)floorf(position.y / BLOCK_SIZE);
+        int blockZ = (int)floorf(position.z / BLOCK_SIZE);
+
+        if (blockX < 0 || blockX >= WORLD_X ||
+            blockY < 0 || blockY >= WORLD_Y ||
+            blockZ < 0 || blockZ >= WORLD_Z)
+        {
+            continue;
+        }
+
+        if(world_data[blockX][blockY][blockZ] != 0 ){
+            world_data[blockX][blockY][blockZ] = 0;
+            return;
+        }
+    }
+}
+
+void WorldPlaceBlock(void){
+    int lastX = (int)floorf(camera.position.x / BLOCK_SIZE);
+    int lastY = (int)floorf(camera.position.y / BLOCK_SIZE);
+    int lastZ = (int)floorf(camera.position.z / BLOCK_SIZE);
+    Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
+    Vector3 position = ray.position;
+    for (float dist = 0; dist < 160.0f; dist += 0.2f){
+        position.x = ray.position.x + ray.direction.x * dist;
+        position.y = ray.position.y + ray.direction.y * dist;
+        position.z = ray.position.z + ray.direction.z * dist;
+
+        int blockX = (int)floorf(position.x / BLOCK_SIZE);
+        int blockY = (int)floorf(position.y / BLOCK_SIZE);
+        int blockZ = (int)floorf(position.z / BLOCK_SIZE);
+
+        if (blockX < 0 || blockX >= WORLD_X ||
+            blockY < 0 || blockY >= WORLD_Y ||
+            blockZ < 0 || blockZ >= WORLD_Z)
+        {
+            continue;
+        }
+
+        if(world_data[blockX][blockY][blockZ] != 0 ){
+            world_data[lastX][lastY][lastZ] = selectedBlock;
+            return;
+        } else {
+            lastX = blockX;
+            lastY = blockY;
+            lastZ = blockZ;
+        }
+    }
+}
+
+
 
 void UnloadWorld(void){
     UnloadModel(grass_block);
@@ -144,4 +205,6 @@ void UnloadWorld(void){
     UnloadTexture(dirt_texture);
     UnloadModel(missing_block);
     UnloadTexture(missing_texture);
+    UnloadModel(stone_block);
+    UnloadTexture(stone_texture);
 }
