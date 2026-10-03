@@ -1,5 +1,6 @@
 #include <raylib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "lib/main.h"
 #include "lib/gui.h"
 #include "lib/world.h"
@@ -29,7 +30,7 @@ int main(void)
         UpdatePlayer();
         DrawWorld();
         BeginBlendMode(BLEND_ALPHA);
-        Highlight();
+        // Highlight();
         EndBlendMode();
         
         EndMode3D();

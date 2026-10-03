@@ -59,10 +59,13 @@ void UpdatePlayer(void){
         camera.position.z -= right.z * speed * dt;
     }
     if(IsKeyDown(KEY_SPACE)){
+        /*
         if(canjump){
             grounded = false;
             velocityY = jumpheight;
         }
+        */
+        camera.position.y += speed * dt;
     }
     if(IsKeyDown(KEY_LEFT_SHIFT)){
         camera.position.y -= speed * dt;
@@ -90,13 +93,16 @@ void UpdatePlayer(void){
     if(IsKeyDown(KEY_THREE)){
         selectedBlock = 3;
     }
+    /*
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
         WorldBreakBlock();
     }
     if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
         WorldPlaceBlock();
     }
+    */
 
+    /*
     velocityY -= gravity * dt;
 
     camera.position.y += velocityY;
@@ -111,10 +117,7 @@ void UpdatePlayer(void){
         grounded = false;
         canjump = false;
     }
-
-    camera.target.x = camera.position.x + cosf(pitch) * sinf(yaw);
-    camera.target.y = camera.position.y + sinf(pitch);
-    camera.target.z = camera.position.z + cosf(pitch) * cosf(yaw);
+    */
 
     if(pitch > 1.5f){
         pitch = 1.5f;
@@ -122,4 +125,8 @@ void UpdatePlayer(void){
     if(pitch < -1.5){
         pitch = -1.5f;
     }
+
+    camera.target.x = camera.position.x + cosf(pitch) * sinf(yaw);
+    camera.target.y = camera.position.y + sinf(pitch);
+    camera.target.z = camera.position.z + cosf(pitch) * cosf(yaw);
 }

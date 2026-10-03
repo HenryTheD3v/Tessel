@@ -1,11 +1,19 @@
 #include <raylib.h>
 #include <stdio.h>
 #include "lib/world.h"
+#include "lib/chunk.h"
 #include <math.h>
 
 #define WORLD_X 16
 #define WORLD_Y 16
 #define WORLD_Z 16
+#define CHUNK_X 16
+#define CHUNK_Y 16
+#define CHUNK_Z 16
+
+// temp test for chunks
+int id = 2;
+
 float BLOCK_SIZE = 20.0f;
 
 
@@ -26,6 +34,9 @@ Texture2D grasstop_texture;
 Texture2D dirt_texture;
 Texture2D missing_texture;
 Texture2D stone_texture;
+
+// Test Chunks
+Chunk testchunk;
 
 
 int selectedBlock = 1;
@@ -66,77 +77,64 @@ void InitWorld(void){
     stone_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = stone_texture;
 
     // World Data
-    for (int x = 0; x < WORLD_X; x++){
-        for (int z = 0; z < WORLD_Z; z++){
-            world_data[x][0][z] = 3;
-            world_data[x][1][z] = 3;
-            world_data[x][2][z] = 3;
-            world_data[x][3][z] = 2;
-            world_data[x][4][z] = 2;
-            world_data[x][5][z] = 2;
-            world_data[x][6][z] = 1;
-        }
-    }
+    
+    InitChunk(&testchunk, -1, 0, id);
 }
 
 void DrawWorld(void){
-    for (int x = 0; x < WORLD_X; x++){
-        for (int y = 0; y < WORLD_Y; y++){
-            for (int z = 0; z < WORLD_Z; z++){
-        if(world_data[x][y][z] == 0){
-            continue;
-        }
-        if(world_data[x][y][z] == 1){
-            DrawModel(
-                grass_block,
-                (Vector3) {
-                    x * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    y * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    z * BLOCK_SIZE + BLOCK_SIZE / 2.0f
-                },
-                20.0f,
-                WHITE
-            );
-        }
-        else if(world_data[x][y][z] == 2){
-            DrawModel(
-                dirt_block,
-                (Vector3) {
-                    x * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    y * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    z * BLOCK_SIZE + BLOCK_SIZE / 2.0f
-                },
-                20.0f,
-                WHITE
-            );
-        } else if(world_data[x][y][z] == 3){
-            DrawModel(
-                stone_block,
-                (Vector3) {
-                    x * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    y * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    z * BLOCK_SIZE + BLOCK_SIZE / 2.0f
-                },
-                20.0f,
-                WHITE
-            );
-        } else {
-            DrawModel(
+    for(int x = 0; x < CHUNK_SIZE; x++){
+        for(int y = 0; y < CHUNK_SIZE; y++){
+            for(int z = 0; z < CHUNK_SIZE; z++){
+                int blockID = testchunk.blocks[x][y][z];
+
+                if(blockID == 0)
+                    continue;
+                
+                int worldX = testchunk.x * CHUNK_SIZE + x;
+                int worldZ = testchunk.z * CHUNK_SIZE + z;
+
+                Vector3 position = {
+                    worldX * BLOCK_SIZE,
+                    y * BLOCK_SIZE,
+                    worldZ * BLOCK_SIZE
+                };
+
+                if(blockID == 1){
+                    DrawModel(
+                    grass_block,
+                    position,
+                    BLOCK_SIZE,
+                    WHITE
+                    );
+                }
+                else if(blockID == 2){
+                    DrawModel(
+                    dirt_block,
+                    position,
+                    BLOCK_SIZE,
+                    WHITE
+                    );
+                }
+                else if(blockID == 3){
+                    DrawModel(
+                    stone_block,
+                    position,
+                    BLOCK_SIZE,
+                    WHITE
+                    );
+                } else {
+                    DrawModel(
                     missing_block,
-                (Vector3) {
-                    x * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    y * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    z * BLOCK_SIZE + BLOCK_SIZE / 2.0f
-                },
-                20.0f,
-                WHITE
-            );
-        }
-        }
+                    position,
+                    BLOCK_SIZE,
+                    WHITE
+                    );
+                }
+            }
         }
     }
 }
-
+/*
 void WorldBreakBlock(void){
     Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
     Vector3 position = ray.position;
@@ -195,6 +193,7 @@ void WorldPlaceBlock(void){
         }
     }
 }
+
 void Highlight(void){
     Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
     Vector3 position = ray.position;
@@ -225,6 +224,7 @@ void Highlight(void){
         }
     }
 }
+*/
 
 
 
