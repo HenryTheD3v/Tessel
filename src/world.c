@@ -40,7 +40,7 @@ Chunk testchunk;
 
 
 int selectedBlock = 1;
-int world_data[WORLD_X][WORLD_Y][WORLD_Z];
+
 
 Camera3D camera;
 
@@ -94,9 +94,9 @@ void DrawWorld(void){
                 int worldZ = testchunk.z * CHUNK_SIZE + z;
 
                 Vector3 position = {
-                    worldX * BLOCK_SIZE,
-                    y * BLOCK_SIZE,
-                    worldZ * BLOCK_SIZE
+                    worldX * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
+                    y * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
+                    worldZ * BLOCK_SIZE + BLOCK_SIZE / 2.0f
                 };
 
                 if(blockID == 1){
@@ -134,7 +134,7 @@ void DrawWorld(void){
         }
     }
 }
-/*
+
 void WorldBreakBlock(void){
     Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
     Vector3 position = ray.position;
@@ -147,24 +147,17 @@ void WorldBreakBlock(void){
         int blockY = (int)floorf(position.y / BLOCK_SIZE);
         int blockZ = (int)floorf(position.z / BLOCK_SIZE);
 
-        if (blockX < 0 || blockX >= WORLD_X ||
-            blockY < 0 || blockY >= WORLD_Y ||
-            blockZ < 0 || blockZ >= WORLD_Z)
-        {
-            continue;
-        }
-
-        if(world_data[blockX][blockY][blockZ] != 0 ){
-            world_data[blockX][blockY][blockZ] = 0;
+        if(GetBlock(blockX, blockY, blockZ) != 0 ){
+            SetBlock(blockX, blockY, blockZ, 0);
             return;
         }
     }
 }
 
 void WorldPlaceBlock(void){
-    int lastX = (int)floorf(camera.position.x / BLOCK_SIZE);
-    int lastY = (int)floorf(camera.position.y / BLOCK_SIZE);
-    int lastZ = (int)floorf(camera.position.z / BLOCK_SIZE);
+    int64_t lastX = (int64_t)floorf(camera.position.x / BLOCK_SIZE);
+    int64_t lastY = (int64_t)floorf(camera.position.y / BLOCK_SIZE);
+    int64_t lastZ = (int64_t)floorf(camera.position.z / BLOCK_SIZE);
     Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
     Vector3 position = ray.position;
     for (float dist = 0; dist < 160.0f; dist += 0.2f){
@@ -176,15 +169,8 @@ void WorldPlaceBlock(void){
         int blockY = (int)floorf(position.y / BLOCK_SIZE);
         int blockZ = (int)floorf(position.z / BLOCK_SIZE);
 
-        if (blockX < 0 || blockX >= WORLD_X ||
-            blockY < 0 || blockY >= WORLD_Y ||
-            blockZ < 0 || blockZ >= WORLD_Z)
-        {
-            continue;
-        }
-
-        if(world_data[blockX][blockY][blockZ] != 0 ){
-            world_data[lastX][lastY][lastZ] = selectedBlock;
+        if(GetBlock(blockX, blockY, blockZ) != 0 ){
+            SetBlock(lastX, lastY, lastZ, selectedBlock);
             return;
         } else {
             lastX = blockX;
@@ -206,15 +192,13 @@ void Highlight(void){
         int blockY = (int)floorf(position.y / BLOCK_SIZE);
         int blockZ = (int)floorf(position.z / BLOCK_SIZE);
 
-        if (blockX < 0 || blockX >= WORLD_X ||
-            blockY < 0 || blockY >= WORLD_Y ||
-            blockZ < 0 || blockZ >= WORLD_Z)
-        {
-            continue;
-        }
-
-        if(world_data[blockX][blockY][blockZ] != 0 ){
-            DrawCube((Vector3){blockX * BLOCK_SIZE + BLOCK_SIZE / 2.0f,blockY * BLOCK_SIZE + BLOCK_SIZE / 2.0f,blockZ * BLOCK_SIZE + BLOCK_SIZE / 2.0f},
+        if(GetBlock(blockX, blockY, blockZ) != 0 ){
+            DrawCube(
+                (Vector3){
+                    blockX * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
+                    blockY * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
+                    blockZ * BLOCK_SIZE + BLOCK_SIZE / 2.0f
+                },
                 20.1f,
                 20.1f,
                 20.1f,
@@ -224,7 +208,6 @@ void Highlight(void){
         }
     }
 }
-*/
 
 
 

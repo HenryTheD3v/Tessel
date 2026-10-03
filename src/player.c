@@ -93,14 +93,15 @@ void UpdatePlayer(void){
     if(IsKeyDown(KEY_THREE)){
         selectedBlock = 3;
     }
-    /*
+    
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
         WorldBreakBlock();
     }
+    
     if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
         WorldPlaceBlock();
     }
-    */
+    
 
     /*
     velocityY -= gravity * dt;

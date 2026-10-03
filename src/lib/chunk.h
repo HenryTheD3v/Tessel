@@ -16,5 +16,7 @@ typedef struct {
 } Chunk;
 
 extern void InitChunk(Chunk *chunk, int64_t x, int64_t z, int fillBlock);
+extern void SetBlock(int64_t x, int64_t y, int64_t z, int id);
+extern int GetBlock(int64_t x, int64_t y, int64_t z);
 
 #endif
