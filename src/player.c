@@ -6,29 +6,39 @@
 #include "lib/world.h"
 #include "lib/main.h"
 
+
+Player player = {
+    .position = { 7.0f, 12.0f, 7.0f},
+    .velocity = { 0 },
+    .width = 12.0f,
+    .height = 36.0f,
+    .grounded = false
+};
+
+
+
 float yaw = 0.0f;
 float pitch = 0.0f;
 float sensitivity = 0.003f;
-float speed = 65.0f;
-float speedn = 65.0f;
-float sprint = 3.0f;
+float speed = 8.0f;
+float speedn = 8.0f;
+float sprint = 2.0f;
 float x = 0;
 float y = 0;
 float z = 0;
 
-//float velocityX = 0;
+float velocityX = 0.0f;
 float velocityY = 0.0f;
-//float velocityZ = 0;
-float gravity = 5.0f;
+float velocityZ = 0.0f;
+float gravity = 1.0f;
 bool grounded = false;
-float jumpheight = 2.0f;
+float jumpheight = 1.0f;
 bool canjump = true;
 
 
 
 void UpdatePlayer(void){
     float dt = GetFrameTime();
-    float groundY = 8.8f * BLOCK_SIZE;
     Vector2 mouse = GetMouseDelta();
     yaw -= mouse.x * sensitivity;
     pitch -= mouse.y * sensitivity;
@@ -43,20 +53,20 @@ void UpdatePlayer(void){
         -sinf(yaw)
     };
     if(IsKeyDown(KEY_W)){
-        camera.position.x += forward.x * speed * dt;
-        camera.position.z += forward.z * speed * dt;
+        player.position.x += forward.x * speed * dt;
+        player.position.z += forward.z * speed * dt;
     }
     if(IsKeyDown(KEY_S)){
-        camera.position.x -= forward.x * speed * dt;
-        camera.position.z -= forward.z * speed * dt;
+        player.position.x -= forward.x * speed * dt;
+        player.position.z -= forward.z * speed * dt;
     }
     if(IsKeyDown(KEY_A)){
-        camera.position.x += right.x * speed * dt;
-        camera.position.z += right.z * speed * dt;
+        player.position.x += right.x * speed * dt;
+        player.position.z += right.z * speed * dt;
     }
     if(IsKeyDown(KEY_D)){
-        camera.position.x -= right.x * speed * dt;
-        camera.position.z -= right.z * speed * dt;
+        player.position.x -= right.x * speed * dt;
+        player.position.z -= right.z * speed * dt;
     }
     if(IsKeyDown(KEY_SPACE)){
         /*
@@ -65,15 +75,15 @@ void UpdatePlayer(void){
             velocityY = jumpheight;
         }
         */
-        camera.position.y += speed * dt;
+        player.position.y += speed * dt;
     }
     if(IsKeyDown(KEY_LEFT_SHIFT)){
-        camera.position.y -= speed * dt;
+        player.position.y -= speed * dt;
     }
     if(IsKeyPressed(KEY_R)){
-        camera.position.x = 7 * BLOCK_SIZE;
-        camera.position.y = 12 * BLOCK_SIZE;
-        camera.position.z = 7 * BLOCK_SIZE;
+        player.position.x = 7;
+        player.position.y = 12;
+        player.position.z = 7;
     }
     if(IsKeyDown(KEY_LEFT_CONTROL)){
         speed = speedn * sprint;
@@ -129,7 +139,9 @@ void UpdatePlayer(void){
     if(pitch < -1.5){
         pitch = -1.5f;
     }
-
+    camera.position.x = player.position.x * BLOCK_SIZE;
+    camera.position.y = player.position.y * BLOCK_SIZE + player.height / 2.0f;
+    camera.position.z = player.position.z * BLOCK_SIZE;
     camera.target.x = camera.position.x + cosf(pitch) * sinf(yaw);
     camera.target.y = camera.position.y + sinf(pitch);
     camera.target.z = camera.position.z + cosf(pitch) * cosf(yaw);

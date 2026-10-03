@@ -37,7 +37,7 @@ void DrawGUI(void){
     int fps = GetFPS();
     DrawText(TextFormat("FPS: %d",fps), 20, 60, 40, WHITE);
     DrawText(TextFormat("Yaw: %.3f Pitch: %.3f",yaw, pitch), 20, 100, 40, WHITE);
-    DrawText(TextFormat("X: %.1f Y: %.1f Z: %.1f",camera.position.x/20, camera.position.y/20, camera.position.z/20), 20, 140, 40, WHITE);
+    DrawText(TextFormat("X: %.1f Y: %.1f Z: %.1f",player.position.x, player.position.y + player.height / 2, player.position.z), 20, 140, 40, WHITE);
     if(selectedBlock == 1){
         DrawTextureEx(grass,
         (Vector2){
