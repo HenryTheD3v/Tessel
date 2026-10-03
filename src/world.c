@@ -27,6 +27,7 @@ Model grass_block;
 Model dirt_block;
 Model missing_block;
 Model stone_block;
+Model sand_block;
 
 
 // Texture Declaration
@@ -34,6 +35,7 @@ Texture2D grasstop_texture;
 Texture2D dirt_texture;
 Texture2D missing_texture;
 Texture2D stone_texture;
+Texture2D sand_texture;
 
 // Test Chunks
 Chunk testchunk;
@@ -57,24 +59,28 @@ void InitWorld(void){
     dirt_texture = LoadTexture("assets/dirt.png");
     missing_texture = LoadTexture("assets/missingtexture.png");
     stone_texture = LoadTexture("assets/stone.png");
+    sand_texture = LoadTexture("assets/sand.png");
 
     // Mesh Declaration
     Mesh grassMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
     Mesh dirtMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
     Mesh missingMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
     Mesh stoneMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+    Mesh sandMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
 
     // Model Loading
     grass_block = LoadModelFromMesh(grassMesh);
     dirt_block = LoadModelFromMesh(dirtMesh);
     missing_block = LoadModelFromMesh(missingMesh);
     stone_block = LoadModelFromMesh(stoneMesh);
+    sand_block = LoadModelFromMesh(sandMesh);
 
     // Texture Mapping
     grass_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = grasstop_texture;
     dirt_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = dirt_texture;
     missing_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = missing_texture;
     stone_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = stone_texture;
+    sand_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = sand_texture;
 
     // World Data
     
@@ -106,18 +112,23 @@ void DrawWorld(void){
                     BLOCK_SIZE,
                     WHITE
                     );
-                }
-                else if(blockID == 2){
+                } else if(blockID == 2){
                     DrawModel(
                     dirt_block,
                     position,
                     BLOCK_SIZE,
                     WHITE
                     );
-                }
-                else if(blockID == 3){
+                } else if(blockID == 3){
                     DrawModel(
                     stone_block,
+                    position,
+                    BLOCK_SIZE,
+                    WHITE
+                    );
+                } else if(blockID == 4){
+                    DrawModel(
+                    sand_block,
                     position,
                     BLOCK_SIZE,
                     WHITE
@@ -220,4 +231,6 @@ void UnloadWorld(void){
     UnloadTexture(missing_texture);
     UnloadModel(stone_block);
     UnloadTexture(stone_texture);
+    UnloadModel(sand_block);
+    UnloadTexture(sand_texture);
 }

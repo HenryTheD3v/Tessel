@@ -93,6 +93,9 @@ void UpdatePlayer(void){
     if(IsKeyDown(KEY_THREE)){
         selectedBlock = 3;
     }
+    if(IsKeyDown(KEY_FOUR)){
+        selectedBlock = 4;
+    }
     
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
         WorldBreakBlock();
