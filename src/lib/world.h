@@ -6,6 +6,7 @@
 
 extern Camera3D camera;
 extern int selectedBlock;
+extern float BLOCK_SIZE;
 
 void InitWorld(void);
 void DrawGUI(void);

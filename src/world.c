@@ -6,7 +6,7 @@
 #define WORLD_X 16
 #define WORLD_Y 16
 #define WORLD_Z 16
-#define BLOCK_SIZE 20.0f
+float BLOCK_SIZE = 20.0f;
 
 
 // Nothing is 0
