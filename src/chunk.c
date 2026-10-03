@@ -17,7 +17,7 @@ void InitChunk(Chunk *chunk, int64_t x, int64_t z, int fillBlock){
     chunk->modified = false;
 
     for(int x = 0; x < CHUNK_SIZE; x++){
-        for(int y = 0; y < 2; y++){
+        for(int y = 0; y < CHUNK_SIZE; y++){
             for(int z = 0; z < CHUNK_SIZE; z++){
                 chunk->blocks[x][y][z] = fillBlock;
             }
@@ -41,7 +41,10 @@ void SetBlock(int64_t x, int64_t y, int64_t z, int id)
     if (localZ < 0)
         localZ += CHUNK_SIZE;
 
-    testchunk.blocks[localX][localY][localZ] = id;
+    if (testchunk.blocks[localX][localY][localZ] != id) {
+        testchunk.blocks[localX][localY][localZ] = id;
+        testchunk.modified = true;
+    }
 }
 
 int GetBlock(int64_t x, int64_t y, int64_t z)

@@ -1,8 +1,10 @@
 #include <raylib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "lib/world.h"
 #include "lib/chunk.h"
 #include <math.h>
+#include "lib/chunk_mesh.h"
 
 #define WORLD_X 16
 #define WORLD_Y 16
@@ -22,20 +24,16 @@ float BLOCK_SIZE = 20.0f;
 // Dirt is 2
 // Stone is 3
 
-// Model Declaration
-Model grass_block;
-Model dirt_block;
-Model missing_block;
-Model stone_block;
-Model sand_block;
-
-
 // Texture Declaration
 Texture2D grasstop_texture;
 Texture2D dirt_texture;
 Texture2D missing_texture;
 Texture2D stone_texture;
 Texture2D sand_texture;
+Texture2D block_textures[5];
+
+Model chunk_model;
+bool chunk_model_ready;
 
 // Test Chunks
 Chunk testchunk;
@@ -61,89 +59,28 @@ void InitWorld(void){
     stone_texture = LoadTexture("assets/stone.png");
     sand_texture = LoadTexture("assets/sand.png");
 
-    // Mesh Declaration
-    Mesh grassMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-    Mesh dirtMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-    Mesh missingMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-    Mesh stoneMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-    Mesh sandMesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-
-    // Model Loading
-    grass_block = LoadModelFromMesh(grassMesh);
-    dirt_block = LoadModelFromMesh(dirtMesh);
-    missing_block = LoadModelFromMesh(missingMesh);
-    stone_block = LoadModelFromMesh(stoneMesh);
-    sand_block = LoadModelFromMesh(sandMesh);
-
-    // Texture Mapping
-    grass_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = grasstop_texture;
-    dirt_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = dirt_texture;
-    missing_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = missing_texture;
-    stone_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = stone_texture;
-    sand_block.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = sand_texture;
+    block_textures[0] = missing_texture;
+    block_textures[1] = grasstop_texture;
+    block_textures[2] = dirt_texture;
+    block_textures[3] = stone_texture;
+    block_textures[4] = sand_texture;
 
     // World Data
-    
     InitChunk(&testchunk, -1, 0, id);
+    testchunk.modified = true;
+    chunk_model = (Model){ 0 };
+    chunk_model_ready = false;
 }
 
 void DrawWorld(void){
-    for(int x = 0; x < CHUNK_SIZE; x++){
-        for(int y = 0; y < CHUNK_SIZE; y++){
-            for(int z = 0; z < CHUNK_SIZE; z++){
-                int blockID = testchunk.blocks[x][y][z];
-
-                if(blockID == 0)
-                    continue;
-                
-                int worldX = testchunk.x * CHUNK_SIZE + x;
-                int worldZ = testchunk.z * CHUNK_SIZE + z;
-
-                Vector3 position = {
-                    worldX * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    y * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    worldZ * BLOCK_SIZE + BLOCK_SIZE / 2.0f
-                };
-
-                if(blockID == 1){
-                    DrawModel(
-                    grass_block,
-                    position,
-                    BLOCK_SIZE,
-                    WHITE
-                    );
-                } else if(blockID == 2){
-                    DrawModel(
-                    dirt_block,
-                    position,
-                    BLOCK_SIZE,
-                    WHITE
-                    );
-                } else if(blockID == 3){
-                    DrawModel(
-                    stone_block,
-                    position,
-                    BLOCK_SIZE,
-                    WHITE
-                    );
-                } else if(blockID == 4){
-                    DrawModel(
-                    sand_block,
-                    position,
-                    BLOCK_SIZE,
-                    WHITE
-                    );
-                } else {
-                    DrawModel(
-                    missing_block,
-                    position,
-                    BLOCK_SIZE,
-                    WHITE
-                    );
-                }
-            }
-        }
+    if (testchunk.modified) {
+        if (chunk_model_ready) UnloadModel(chunk_model);
+        chunk_model = ChunkToModel(&testchunk, BLOCK_SIZE, block_textures);
+        chunk_model_ready = chunk_model.meshCount > 0;
+        testchunk.modified = false;
     }
+
+    if (chunk_model_ready) DrawModel(chunk_model, (Vector3){ 0 }, 1.0f, WHITE);
 }
 
 void WorldBreakBlock(void){
@@ -223,14 +160,10 @@ void Highlight(void){
 
 
 void UnloadWorld(void){
-    UnloadModel(grass_block);
+    if (chunk_model_ready) UnloadModel(chunk_model);
     UnloadTexture(grasstop_texture);
-    UnloadModel(dirt_block);
     UnloadTexture(dirt_texture);
-    UnloadModel(missing_block);
     UnloadTexture(missing_texture);
-    UnloadModel(stone_block);
     UnloadTexture(stone_texture);
-    UnloadModel(sand_block);
     UnloadTexture(sand_texture);
 }
