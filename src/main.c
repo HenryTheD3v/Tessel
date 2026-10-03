@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <math.h>
 
-Vector2 res = {1280/1.5, 720/1.5};
+Vector2 res = {1280/1.25, 720/1.25};
 bool active = true;
 
 
@@ -22,8 +22,6 @@ int main(void)
 
     while (active)
     {
-
-        
         BeginDrawing();
         ClearBackground(SKYBLUE);
         BeginMode3D(camera);

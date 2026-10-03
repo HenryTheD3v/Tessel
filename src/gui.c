@@ -7,12 +7,14 @@ static Texture2D crosshair;
 static Texture2D grass;
 static Texture2D dirt;
 static Texture2D stone;
+static Texture2D missing;
 
 void InitGUI(void){
     crosshair = LoadTexture("assets/crosshair.png");
     grass = LoadTexture("assets/grasstop.png");
     dirt = LoadTexture("assets/dirt.png");
     stone = LoadTexture("assets/stone.png");
+    missing = LoadTexture("assets/missing.png");
 }
 
 void DrawGUI(void){
@@ -61,6 +63,15 @@ void DrawGUI(void){
         0.0f,
         5.0f,
         (Color){255, 255, 255, 128});
+    } else {
+        DrawTextureEx(missing,
+        (Vector2){
+            screenwidth - 20 - missing.height * 5,
+            20,
+        },
+        0.0f,
+        5.0f,
+        (Color){255, 255, 255, 128});
     }
 }
 
@@ -69,4 +80,5 @@ void UnloadGUI(void){
     UnloadTexture(grass);
     UnloadTexture(dirt);
     UnloadTexture(stone);
+    UnloadTexture(missing);
 }

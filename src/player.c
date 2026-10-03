@@ -11,9 +11,11 @@ float pitch = 0.0f;
 float sensitivity = 0.003f;
 float speed = 65.0f;
 float speedn = 65.0f;
+float sprint = 3.0f;
 float x = 0;
 float y = 0;
 float z = 0;
+
 //float velocityX = 0;
 float velocityY = 0.0f;
 //float velocityZ = 0;
@@ -64,7 +66,7 @@ void UpdatePlayer(void){
         camera.position.z = 0;
     }
     if(IsKeyDown(KEY_LEFT_CONTROL)){
-        speed = speedn * 1.5;
+        speed = speedn * sprint;
     }else{
             speed = speedn;
         }
