@@ -4,7 +4,6 @@
 #include "lib/world.h"
 #include "lib/chunk.h"
 #include <math.h>
-#include "lib/chunk_mesh.h"
 
 #define WORLD_X 16
 #define WORLD_Y 16
@@ -32,13 +31,6 @@ Texture2D stone_texture;
 Texture2D sand_texture;
 Texture2D block_textures[5];
 
-Model chunk_model;
-bool chunk_model_ready;
-
-// Test Chunks
-Chunk testchunk;
-
-
 int selectedBlock = 1;
 
 
@@ -65,22 +57,12 @@ void InitWorld(void){
     block_textures[3] = stone_texture;
     block_textures[4] = sand_texture;
 
-    // World Data
-    InitChunk(&testchunk, -1, 0, id);
-    testchunk.modified = true;
-    chunk_model = (Model){ 0 };
-    chunk_model_ready = false;
+    CreateChunkGrid(-1, 0, 10, 10, id);
 }
 
 void DrawWorld(void){
-    if (testchunk.modified) {
-        if (chunk_model_ready) UnloadModel(chunk_model);
-        chunk_model = ChunkToModel(&testchunk, BLOCK_SIZE, block_textures);
-        chunk_model_ready = chunk_model.meshCount > 0;
-        testchunk.modified = false;
-    }
-
-    if (chunk_model_ready) DrawModel(chunk_model, (Vector3){ 0 }, 1.0f, WHITE);
+    UpdateChunks(BLOCK_SIZE, block_textures);
+    DrawChunks();
 }
 
 void WorldBreakBlock(void){
@@ -160,7 +142,7 @@ void Highlight(void){
 
 
 void UnloadWorld(void){
-    if (chunk_model_ready) UnloadModel(chunk_model);
+    ClearChunks();
     UnloadTexture(grasstop_texture);
     UnloadTexture(dirt_texture);
     UnloadTexture(missing_texture);
