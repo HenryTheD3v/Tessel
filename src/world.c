@@ -4,6 +4,7 @@
 #include "lib/world.h"
 #include "lib/chunk.h"
 #include "lib/player.h"
+#include "lib/generator.h"
 #include <math.h>
 
 #define WORLD_X 16
@@ -12,9 +13,6 @@
 #define CHUNK_X 16
 #define CHUNK_Y 16
 #define CHUNK_Z 16
-
-// temp test for chunks
-int id = 2;
 
 float BLOCK_SIZE = 20.0f;
 
@@ -59,7 +57,7 @@ void InitWorld(void){
     block_textures[3] = stone_texture;
     block_textures[4] = sand_texture;
 
-    CreateChunkGrid(-1, 0, 10, 10, id);
+    GenerateWorld(10, 10, 123456789);
 }
 
 void DrawWorld(void){
@@ -86,6 +84,20 @@ void WorldBreakBlock(void){
     }
 }
 
+static bool BlockOverlapsPlayer(int64_t blockX, int64_t blockY, int64_t blockZ)
+{
+    float playerMinX = player.position.x - player.width / 2.0f;
+    float playerMaxX = player.position.x + player.width / 2.0f;
+    float playerMinY = player.position.y;
+    float playerMaxY = player.position.y + player.height;
+    float playerMinZ = player.position.z - player.width / 2.0f;
+    float playerMaxZ = player.position.z + player.width / 2.0f;
+
+    return playerMaxX > (float)blockX && playerMinX < (float)(blockX + 1) &&
+           playerMaxY > (float)blockY && playerMinY < (float)(blockY + 1) &&
+           playerMaxZ > (float)blockZ && playerMinZ < (float)(blockZ + 1);
+}
+
 void WorldPlaceBlock(void){
     int64_t lastX = (int64_t)floorf(camera.position.x / BLOCK_SIZE);
     int64_t lastY = (int64_t)floorf(camera.position.y / BLOCK_SIZE);
@@ -102,15 +114,10 @@ void WorldPlaceBlock(void){
         int blockZ = (int)floorf(position.z / BLOCK_SIZE);
 
         if(GetBlock(blockX, blockY, blockZ) != 0 ){
-            if(GetBlock(lastX, lastY, lastZ) == 0){
-                if(player.position.x < lastX + 1 && player.position.x > lastX &&
-                    player.position.y < lastY + 2 && player.position.y > lastY &&
-                    player.position.z < lastZ + 1 && player.position.z > lastZ){
-                    return;
-                }
+            if (GetBlock(lastX, lastY, lastZ) == 0 &&
+                !BlockOverlapsPlayer(lastX, lastY, lastZ)) {
                 SetBlock(lastX, lastY, lastZ, selectedBlock);
             }
-            SetBlock(lastX, lastY, lastZ, selectedBlock);
             return;
         } else {
             lastX = blockX;

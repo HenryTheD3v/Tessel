@@ -36,7 +36,13 @@ void DrawGUI(void){
     DrawText("Tessel", 20, 20, 40, WHITE);
     int fps = GetFPS();
     DrawText(TextFormat("FPS: %d",fps), 20, 60, 40, WHITE);
-    DrawText(TextFormat("X: %.1f Y: %.1f Z: %.1f",player.position.x, player.position.y + player.height / 2, player.position.z), 20, 100, 40, WHITE);
+    if(debug){
+        DrawText("Debug Mode Enabled", 20, screenheight - 20, 10, WHITE);
+        DrawText("Hold M for always grounded", 20, screenheight - 10, 10, WHITE);
+        DrawText(TextFormat("X: %.1f Y: %.1f Z: %.1f",player.position.x, player.position.y + player.height / 2, player.position.z), 20, 100, 40, WHITE);
+        DrawText(TextFormat("VX: %.1f VY: %.1f VZ: %.1f",player.velocity.x, player.velocity.y, player.velocity.z), 20, 140, 40, WHITE);
+    }
+    
     if(selectedBlock == 1){
         DrawTextureEx(grass,
         (Vector2){

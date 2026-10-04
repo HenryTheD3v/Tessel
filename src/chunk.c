@@ -31,7 +31,7 @@ static Chunk *FindChunk(int64_t chunkX, int64_t chunkZ)
     return NULL;
 }
 
-void InitChunk(Chunk *chunk, int64_t x, int64_t z, int fillBlock)
+void InitChunk(Chunk *chunk, int64_t x, int64_t z)
 {
     chunk->x = x;
     chunk->z = z;
@@ -42,13 +42,13 @@ void InitChunk(Chunk *chunk, int64_t x, int64_t z, int fillBlock)
     for (int blockX = 0; blockX < CHUNK_SIZE; blockX++) {
         for (int blockY = 0; blockY < CHUNK_SIZE; blockY++) {
             for (int blockZ = 0; blockZ < CHUNK_SIZE; blockZ++) {
-                chunk->blocks[blockX][blockY][blockZ] = fillBlock;
+                chunk->blocks[blockX][blockY][blockZ] = 0;
             }
         }
     }
 }
 
-Chunk *CreateChunk(int64_t chunkX, int64_t chunkZ, int fillBlock)
+Chunk *CreateChunk(int64_t chunkX, int64_t chunkZ)
 {
     Chunk *existing = FindChunk(chunkX, chunkZ);
     if (existing != NULL) return existing;
@@ -62,15 +62,15 @@ Chunk *CreateChunk(int64_t chunkX, int64_t chunkZ, int fillBlock)
     }
 
     Chunk *chunk = &chunks[chunkCount++];
-    InitChunk(chunk, chunkX, chunkZ, fillBlock);
+    InitChunk(chunk, chunkX, chunkZ);
     return chunk;
 }
 
-void CreateChunkGrid(int64_t startChunkX, int64_t startChunkZ, size_t width, size_t depth, int fillBlock)
+void CreateChunkGrid(int64_t startChunkX, int64_t startChunkZ, size_t width, size_t depth)
 {
     for (size_t x = 0; x < width; x++) {
         for (size_t z = 0; z < depth; z++) {
-            CreateChunk(startChunkX + (int64_t)x, startChunkZ + (int64_t)z, fillBlock);
+            CreateChunk(startChunkX + (int64_t)x, startChunkZ + (int64_t)z);
         }
     }
 }
@@ -127,7 +127,7 @@ void SetBlock(int64_t x, int64_t y, int64_t z, int id)
     int64_t chunkZ = WorldToChunk(z);
     int localX = WorldToLocal(x);
     int localZ = WorldToLocal(z);
-    Chunk *chunk = CreateChunk(chunkX, chunkZ, 0);
+    Chunk *chunk = CreateChunk(chunkX, chunkZ);
     if (chunk == NULL) return;
 
     if (chunk->blocks[localX][(int)y][localZ] != id) {

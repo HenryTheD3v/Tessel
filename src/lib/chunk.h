@@ -19,9 +19,9 @@ typedef struct {
     bool modelReady;
 } Chunk;
 
-void InitChunk(Chunk *chunk, int64_t x, int64_t z, int fillBlock);
-Chunk *CreateChunk(int64_t chunkX, int64_t chunkZ, int fillBlock);
-void CreateChunkGrid(int64_t startChunkX, int64_t startChunkZ, size_t width, size_t depth, int fillBlock);
+void InitChunk(Chunk *chunk, int64_t x, int64_t z);
+Chunk *CreateChunk(int64_t chunkX, int64_t chunkZ);
+void CreateChunkGrid(int64_t startChunkX, int64_t startChunkZ, size_t width, size_t depth);
 void ClearChunks(void);
 size_t GetChunkCount(void);
 Chunk *GetChunkAt(size_t index);
