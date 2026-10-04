@@ -7,11 +7,16 @@
 typedef struct {
     Vector3 position;
     Vector3 velocity;
+    Vector3 camera;
+    Vector2 rotation;
 
     float width;
     float height;
+    float gravity;
+    float friction;
 
     bool grounded;
+    bool ismoving;
 } Player;
 
 extern float yaw;

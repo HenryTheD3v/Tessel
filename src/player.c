@@ -4,86 +4,122 @@
 #include <math.h>
 #include "lib/player.h"
 #include "lib/world.h"
+#include "lib/chunk.h"
 #include "lib/main.h"
 
 
 Player player = {
-    .position = { 7.0f, 12.0f, 7.0f},
-    .velocity = { 0 },
-    .width = 12.0f,
-    .height = 36.0f,
-    .grounded = false
+    .position = { -13.0f, 20.0f, 13.0f},
+    .velocity = { 0 },\
+    .camera = { 0 },
+    .rotation = { 0, 0 },
+    .width = 0.6f,
+    .height = 1.8f,
+    .gravity = 10.0f,
+    .friction = 8.0f,
+    .grounded = false,
+    .ismoving = false
 };
 
-
-
-float yaw = 0.0f;
-float pitch = 0.0f;
 float sensitivity = 0.003f;
-float speed = 8.0f;
-float speedn = 8.0f;
+float speed = 40.0f;
+float speedn = 40.0f;
 float sprint = 2.0f;
 float x = 0;
 float y = 0;
 float z = 0;
 
-float velocityX = 0.0f;
-float velocityY = 0.0f;
-float velocityZ = 0.0f;
-float gravity = 1.0f;
-bool grounded = false;
 float jumpheight = 1.0f;
-bool canjump = true;
 
 
+bool CheckCollision(Vector3 position)
+{
+    float minX = position.x - player.width / 2.0f;
+    float maxX = position.x + player.width / 2.0f;
+
+    float minY = position.y;
+    float maxY = position.y + player.height;
+
+    float minZ = position.z - player.width / 2.0f;
+    float maxZ = position.z + player.width / 2.0f;
+
+    int startX = (int)floorf(minX);
+    int endX   = (int)floorf(maxX);
+
+    int startY = (int)floorf(minY);
+    int endY   = (int)floorf(maxY);
+
+    int startZ = (int)floorf(minZ);
+    int endZ   = (int)floorf(maxZ);
+
+    for (int x = startX; x <= endX; x++) {
+        for (int y = startY; y <= endY; y++) {
+            for (int z = startZ; z <= endZ; z++) {
+
+                if (GetBlock(x, y, z) != 0) {
+                    return true;
+                }
+
+            }
+        }
+    }
+
+    return false;
+}
 
 void UpdatePlayer(void){
     float dt = GetFrameTime();
     Vector2 mouse = GetMouseDelta();
-    yaw -= mouse.x * sensitivity;
-    pitch -= mouse.y * sensitivity;
+    player.rotation.x -= mouse.x * sensitivity; // yaw
+    player.rotation.y -= mouse.y * sensitivity; // pitch
     Vector3 forward = {
-        sinf(yaw),
+        sinf(player.rotation.x),
         0.0f,
-        cosf(yaw)
+        cosf(player.rotation.x)
     };
     Vector3 right = {
-        cosf(yaw),
+        cosf(player.rotation.x),
         0.0f,
-        -sinf(yaw)
+        -sinf(player.rotation.x)
     };
     if(IsKeyDown(KEY_W)){
-        player.position.x += forward.x * speed * dt;
-        player.position.z += forward.z * speed * dt;
+        player.velocity.x += forward.x * speed * dt;
+        player.velocity.z += forward.z * speed * dt;
+        player.ismoving = true;
+    } else {
+        player.ismoving = false;
     }
     if(IsKeyDown(KEY_S)){
-        player.position.x -= forward.x * speed * dt;
-        player.position.z -= forward.z * speed * dt;
+        player.velocity.x -= forward.x * speed * dt;
+        player.velocity.z -= forward.z * speed * dt;
+        player.ismoving = true;
+    } else {
+        player.ismoving = false;
     }
     if(IsKeyDown(KEY_A)){
-        player.position.x += right.x * speed * dt;
-        player.position.z += right.z * speed * dt;
+        player.velocity.x += right.x * speed * dt;
+        player.velocity.z += right.z * speed * dt;
+        player.ismoving = true;
+    } else {
+        player.ismoving = false;
     }
     if(IsKeyDown(KEY_D)){
-        player.position.x -= right.x * speed * dt;
-        player.position.z -= right.z * speed * dt;
+        player.velocity.x -= right.x * speed * dt;
+        player.velocity.z -= right.z * speed * dt;
+        player.ismoving = true;
+    } else {
+        player.ismoving = false;
     }
     if(IsKeyDown(KEY_SPACE)){
-        /*
-        if(canjump){
-            grounded = false;
-            velocityY = jumpheight;
-        }
-        */
-        player.position.y += speed * dt;
+        player.velocity.y = jumpheight;
     }
     if(IsKeyDown(KEY_LEFT_SHIFT)){
-        player.position.y -= speed * dt;
+        player.velocity.y -= speed * dt;
     }
     if(IsKeyPressed(KEY_R)){
-        player.position.x = 7;
-        player.position.y = 12;
-        player.position.z = 7;
+        player.position.x = -13.0f;
+        player.position.y = 20.0f;
+        player.position.z = 13.0f;
     }
     if(IsKeyDown(KEY_LEFT_CONTROL)){
         speed = speedn * sprint;
@@ -115,34 +151,44 @@ void UpdatePlayer(void){
         WorldPlaceBlock();
     }
     
-
-    /*
-    velocityY -= gravity * dt;
-
-    camera.position.y += velocityY;
-
-
-    if(camera.position.y <= groundY){
-        camera.position.y = groundY;
-        velocityY = 0.0f;
-        grounded = true;
-        canjump = true;
-    } else{
-        grounded = false;
-        canjump = false;
+    player.velocity.y -= player.gravity * dt;
+    
+    if(player.rotation.y > 1.5f){
+        player.rotation.y = 1.5f;
     }
-    */
+    if(player.rotation.y < -1.5){
+        player.rotation.y = -1.5f;
+    }
 
-    if(pitch > 1.5f){
-        pitch = 1.5f;
+    float frictionFactor = fmaxf(0.0f, 1.0f - player.friction * dt);
+    if(!player.ismoving){
+        player.velocity.x *= frictionFactor;
+        player.velocity.z *= frictionFactor;
     }
-    if(pitch < -1.5){
-        pitch = -1.5f;
+    
+    player.position.x += player.velocity.x * dt;
+    if(CheckCollision(player.position)){
+        player.position.x -= player.velocity.x * dt;
+        player.velocity.x = 0.0f;
     }
-    camera.position.x = player.position.x * BLOCK_SIZE;
-    camera.position.y = player.position.y * BLOCK_SIZE + player.height / 2.0f;
-    camera.position.z = player.position.z * BLOCK_SIZE;
-    camera.target.x = camera.position.x + cosf(pitch) * sinf(yaw);
-    camera.target.y = camera.position.y + sinf(pitch);
-    camera.target.z = camera.position.z + cosf(pitch) * cosf(yaw);
+    player.position.y += player.velocity.y * dt;
+    if(CheckCollision(player.position)){
+        player.position.y -= player.velocity.y * dt;
+        player.velocity.y = 0.0f;
+    }
+    player.position.z += player.velocity.z * dt;
+    if(CheckCollision(player.position)){
+        player.position.z -= player.velocity.z * dt;
+        player.velocity.z = 0.0f;
+    }
+    player.camera.x = player.position.x;
+    player.camera.y = player.position.y + player.height / 1.25f;
+    player.camera.z = player.position.z;
+
+    camera.position.x = player.camera.x * BLOCK_SIZE;
+    camera.position.y = player.camera.y * BLOCK_SIZE;
+    camera.position.z = player.camera.z * BLOCK_SIZE;
+    camera.target.x = camera.position.x + cosf(player.rotation.y) * sinf(player.rotation.x);
+    camera.target.y = camera.position.y + sinf(player.rotation.y);
+    camera.target.z = camera.position.z + cosf(player.rotation.y) * cosf(player.rotation.x);
 }

@@ -36,8 +36,7 @@ void DrawGUI(void){
     DrawText("Tessel", 20, 20, 40, WHITE);
     int fps = GetFPS();
     DrawText(TextFormat("FPS: %d",fps), 20, 60, 40, WHITE);
-    DrawText(TextFormat("Yaw: %.3f Pitch: %.3f",yaw, pitch), 20, 100, 40, WHITE);
-    DrawText(TextFormat("X: %.1f Y: %.1f Z: %.1f",player.position.x, player.position.y + player.height / 2, player.position.z), 20, 140, 40, WHITE);
+    DrawText(TextFormat("X: %.1f Y: %.1f Z: %.1f",player.position.x, player.position.y + player.height / 2, player.position.z), 20, 100, 40, WHITE);
     if(selectedBlock == 1){
         DrawTextureEx(grass,
         (Vector2){

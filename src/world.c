@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "lib/world.h"
 #include "lib/chunk.h"
+#include "lib/player.h"
 #include <math.h>
 
 #define WORLD_X 16
@@ -22,6 +23,7 @@ float BLOCK_SIZE = 20.0f;
 // Grass is 1
 // Dirt is 2
 // Stone is 3
+// Sand is 4
 
 // Texture Declaration
 Texture2D grasstop_texture;
@@ -100,6 +102,14 @@ void WorldPlaceBlock(void){
         int blockZ = (int)floorf(position.z / BLOCK_SIZE);
 
         if(GetBlock(blockX, blockY, blockZ) != 0 ){
+            if(GetBlock(lastX, lastY, lastZ) == 0){
+                if(player.position.x < lastX + 1 && player.position.x > lastX &&
+                    player.position.y < lastY + 2 && player.position.y > lastY &&
+                    player.position.z < lastZ + 1 && player.position.z > lastZ){
+                    return;
+                }
+                SetBlock(lastX, lastY, lastZ, selectedBlock);
+            }
             SetBlock(lastX, lastY, lastZ, selectedBlock);
             return;
         } else {
