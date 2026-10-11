@@ -23,6 +23,7 @@ typedef struct {
 extern float yaw;
 extern float pitch;
 extern bool debug;
+extern bool showControls;
 
 extern Player player;
 

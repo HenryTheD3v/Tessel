@@ -22,6 +22,7 @@ Player player = {
     .ismoving = false
 };
 
+bool showControls = false;
 bool debug = false;
 float speedcap = 100.0f;
 
@@ -156,6 +157,11 @@ void UpdatePlayer(void){
     if(IsKeyDown(KEY_M)){
         player.grounded = true;
     }
+    if(IsKeyDown(KEY_TAB)){
+        showControls = true;
+    } else {
+        showControls = false;
+    }
 
     
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
@@ -225,9 +231,9 @@ void UpdatePlayer(void){
     player.camera.y = player.position.y + player.height / 1.25f;
     player.camera.z = player.position.z;
 
-    camera.position.x = player.camera.x * BLOCK_SIZE;
-    camera.position.y = player.camera.y * BLOCK_SIZE;
-    camera.position.z = player.camera.z * BLOCK_SIZE;
+    camera.position.x = player.camera.x;
+    camera.position.y = player.camera.y;
+    camera.position.z = player.camera.z;
     camera.target.x = camera.position.x + cosf(player.rotation.y) * sinf(player.rotation.x);
     camera.target.y = camera.position.y + sinf(player.rotation.y);
     camera.target.z = camera.position.z + cosf(player.rotation.y) * cosf(player.rotation.x);

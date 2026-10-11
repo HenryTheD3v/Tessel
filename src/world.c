@@ -6,6 +6,8 @@
 #include "lib/player.h"
 #include "lib/generator.h"
 #include <math.h>
+#include <time.h>
+#include <stdlib.h>
 
 #define WORLD_X 16
 #define WORLD_Y 16
@@ -14,7 +16,7 @@
 #define CHUNK_Y 16
 #define CHUNK_Z 16
 
-float BLOCK_SIZE = 20.0f;
+unsigned int seed = 0;
 
 
 // Nothing is 0
@@ -56,26 +58,29 @@ void InitWorld(void){
     block_textures[2] = dirt_texture;
     block_textures[3] = stone_texture;
     block_textures[4] = sand_texture;
-
-    GenerateWorld(10, 10, 123456789);
+    
+    seed = (unsigned int)time(NULL);
+    srand(seed);
+    
+    GenerateWorld(10, 10, seed);
 }
 
 void DrawWorld(void){
-    UpdateChunks(BLOCK_SIZE, block_textures);
+    UpdateChunks(1, block_textures);
     DrawChunks();
 }
 
 void WorldBreakBlock(void){
     Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
     Vector3 position = ray.position;
-    for (float dist = 0; dist < 120.0f; dist += 0.2f){
+    for (float dist = 0; dist < 6.0f; dist += 0.2f){
         position.x = ray.position.x + ray.direction.x * dist;
         position.y = ray.position.y + ray.direction.y * dist;
         position.z = ray.position.z + ray.direction.z * dist;
 
-        int blockX = (int)floorf(position.x / BLOCK_SIZE);
-        int blockY = (int)floorf(position.y / BLOCK_SIZE);
-        int blockZ = (int)floorf(position.z / BLOCK_SIZE);
+        int blockX = (int)floorf(position.x);
+        int blockY = (int)floorf(position.y);
+        int blockZ = (int)floorf(position.z);
 
         if(GetBlock(blockX, blockY, blockZ) != 0 ){
             SetBlock(blockX, blockY, blockZ, 0);
@@ -94,24 +99,24 @@ static bool BlockOverlapsPlayer(int64_t blockX, int64_t blockY, int64_t blockZ)
     float playerMaxZ = player.position.z + player.width / 2.0f;
 
     return playerMaxX > (float)blockX && playerMinX < (float)(blockX + 1) &&
-           playerMaxY > (float)blockY && playerMinY < (float)(blockY + 1) &&
-           playerMaxZ > (float)blockZ && playerMinZ < (float)(blockZ + 1);
+            playerMaxY > (float)blockY && playerMinY < (float)(blockY + 1) &&
+            playerMaxZ > (float)blockZ && playerMinZ < (float)(blockZ + 1);
 }
 
 void WorldPlaceBlock(void){
-    int64_t lastX = (int64_t)floorf(camera.position.x / BLOCK_SIZE);
-    int64_t lastY = (int64_t)floorf(camera.position.y / BLOCK_SIZE);
-    int64_t lastZ = (int64_t)floorf(camera.position.z / BLOCK_SIZE);
+    int64_t lastX = (int64_t)floorf(camera.position.x);
+    int64_t lastY = (int64_t)floorf(camera.position.y);
+    int64_t lastZ = (int64_t)floorf(camera.position.z);
     Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
     Vector3 position = ray.position;
-    for (float dist = 0; dist < 160.0f; dist += 0.2f){
+    for (float dist = 0; dist < 6.0f; dist += 0.2f){
         position.x = ray.position.x + ray.direction.x * dist;
         position.y = ray.position.y + ray.direction.y * dist;
         position.z = ray.position.z + ray.direction.z * dist;
 
-        int blockX = (int)floorf(position.x / BLOCK_SIZE);
-        int blockY = (int)floorf(position.y / BLOCK_SIZE);
-        int blockZ = (int)floorf(position.z / BLOCK_SIZE);
+        int blockX = (int)floorf(position.x);
+        int blockY = (int)floorf(position.y);
+        int blockZ = (int)floorf(position.z);
 
         if(GetBlock(blockX, blockY, blockZ) != 0 ){
             if (GetBlock(lastX, lastY, lastZ) == 0 &&
@@ -130,25 +135,25 @@ void WorldPlaceBlock(void){
 void Highlight(void){
     Ray ray = GetMouseRay((Vector2){GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f},camera);
     Vector3 position = ray.position;
-    for (float dist = 0; dist < 120.0f; dist += 0.2f){
+    for (float dist = 0; dist < 6.0f; dist += 0.2f){
         position.x = ray.position.x + ray.direction.x * dist;
         position.y = ray.position.y + ray.direction.y * dist;
         position.z = ray.position.z + ray.direction.z * dist;
 
-        int blockX = (int)floorf(position.x / BLOCK_SIZE);
-        int blockY = (int)floorf(position.y / BLOCK_SIZE);
-        int blockZ = (int)floorf(position.z / BLOCK_SIZE);
+        int blockX = (int)floorf(position.x);
+        int blockY = (int)floorf(position.y);
+        int blockZ = (int)floorf(position.z);
 
         if(GetBlock(blockX, blockY, blockZ) != 0 ){
             DrawCube(
                 (Vector3){
-                    blockX * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    blockY * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-                    blockZ * BLOCK_SIZE + BLOCK_SIZE / 2.0f
+                    blockX + 1 / 2.0f,
+                    blockY + 1 / 2.0f,
+                    blockZ + 1 / 2.0f
                 },
-                20.1f,
-                20.1f,
-                20.1f,
+                1.01f,
+                1.01f,
+                1.01f,
                 (Color){255, 255, 255, 128}
             );
             return;

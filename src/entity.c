@@ -63,11 +63,11 @@ void DrawEntities(void){
     DrawModel(
         test,
         (Vector3){
-        entity.position.x * BLOCK_SIZE + BLOCK_SIZE / 2.0f,
-        entity.position.y * BLOCK_SIZE + BLOCK_SIZE / 2.0f * entity.height,
-        entity.position.z * BLOCK_SIZE + BLOCK_SIZE / 2.0f
+        entity.position.x + 1 / 2.0f,
+        entity.position.y + 1 / 2.0f * entity.height,
+        entity.position.z + 1 / 2.0f
         },
-        BLOCK_SIZE / 1.75f,
+        1.0f / 1.75f,
         WHITE
     );
 }

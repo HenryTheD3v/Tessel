@@ -38,10 +38,22 @@ void DrawGUI(void){
     DrawText(TextFormat("FPS: %d",fps), 20, 60, 40, WHITE);
     if(debug){
         DrawText("Debug Mode Enabled", 20, screenheight - 20, 10, WHITE);
-        DrawText("Hold M for always grounded", 20, screenheight - 10, 10, WHITE);
         DrawText(TextFormat("X: %.1f Y: %.1f Z: %.1f",player.position.x, player.position.y + player.height / 2, player.position.z), 20, 100, 40, WHITE);
         DrawText(TextFormat("VX: %.1f VY: %.1f VZ: %.1f",player.velocity.x, player.velocity.y, player.velocity.z), 20, 140, 40, WHITE);
+        DrawText(TextFormat("Seed: %u", seed), 20, 180, 40, WHITE);
     }
+    /*
+    if(showControls == true){
+        DrawText("Controls:", 0 - screenwidth + 10, 20, 40, WHITE);
+        DrawText("WASD - Move", screenwidth - 20 - 300, 60, 30, WHITE);
+        DrawText("Space - Jump", screenwidth - 20 - 300, 90, 30, WHITE);
+        DrawText("Shift - Sprint", screenwidth - 20 - 300, 120, 30, WHITE);
+        DrawText("Left Click - Break Block", screenwidth - 20 - 300, 150, 30, WHITE);
+        DrawText("Right Click - Place Block", screenwidth - 20 - 300, 180, 30, WHITE);
+    } else {
+        DrawText("Press TAB to show controls", screenwidth - 20 - 300, 20, 20, WHITE);
+    }
+    */
     
     if(selectedBlock == 1){
         DrawTextureEx(grass,
