@@ -8,8 +8,10 @@
 #include "lib/main.h"
 
 
+Vector3 spawn = { 8.0f, 20.0f, 8.0f };
+
 Player player = {
-    .position = { 8.0f, 20.0f, 8.0f},
+    .position = { 8.0f, 20.0f, 8.0f },
     .velocity = { 0 },\
     .camera = { 0 },
     .rotation = { 0, 0 },
@@ -36,6 +38,10 @@ float y = 0;
 float z = 0;
 
 float jumpheight = 8.0f;
+
+
+
+
 
 
 bool CheckCollision(Vector3 position)
@@ -124,15 +130,18 @@ void UpdatePlayer(void){
         player.velocity.y -= acceleration * dt;
     }
     if(IsKeyPressed(KEY_R)){
-        player.position.x = -13.0f;
-        player.position.y = 20.0f;
-        player.position.z = 13.0f;
+        player.position.x = spawn.x;
+        player.position.y = spawn.y;
+        player.position.z = spawn.z;
+        // player.velocity.x = 0;
+        // player.velocity.y = 0;
+        // player.velocity.z = 0;
     }
     if(IsKeyDown(KEY_LEFT_CONTROL)){
         maxSpeed = maxSpeedn * sprint;
     }else{
-            maxSpeed = maxSpeedn;
-        }
+        maxSpeed = maxSpeedn;
+    }
     
     if(IsKeyDown(KEY_ESCAPE)){
         active = false;
@@ -200,7 +209,7 @@ void UpdatePlayer(void){
     }
 
     float airdragFactor = fmaxf(0.0f, 1.0f - player.airdrag * dt);
-    if(!player.ismoving && !player.grounded){
+    if(!player.grounded){
         player.velocity.x *= airdragFactor;
         player.velocity.z *= airdragFactor;
     }
