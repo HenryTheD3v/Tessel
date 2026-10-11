@@ -9,7 +9,7 @@
 
 
 Player player = {
-    .position = { -13.0f, 20.0f, 13.0f},
+    .position = { 8.0f, 20.0f, 8.0f},
     .velocity = { 0 },\
     .camera = { 0 },
     .rotation = { 0, 0 },
@@ -17,6 +17,7 @@ Player player = {
     .height = 1.8f,
     .gravity = 20.0f,
     .friction = 8.0f,
+    .airdrag = 2.0f,
     .grounded = false,
     .ismoving = false
 };
@@ -28,7 +29,7 @@ float sensitivity = 0.003f;
 float acceleration = 40.0f;
 float maxSpeed = 4.0f;
 float maxSpeedn = 4.0f;
-float sprint = 1.25f;
+float sprint = 1.5f;
 float x = 0;
 float y = 0;
 float z = 0;
@@ -156,9 +157,6 @@ void UpdatePlayer(void){
         player.grounded = true;
     }
 
-
-
-
     
     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
         WorldBreakBlock();
@@ -188,11 +186,18 @@ void UpdatePlayer(void){
         player.velocity.x *= scale;
         player.velocity.z *= scale;
     }
-        float frictionFactor = fmaxf(0.0f, 1.0f - player.friction * dt);
-        if(!player.ismoving){
-            player.velocity.x *= frictionFactor;
-            player.velocity.z *= frictionFactor;
-        }
+
+    float frictionFactor = fmaxf(0.0f, 1.0f - player.friction * dt);
+    if(!player.ismoving && player.grounded){
+        player.velocity.x *= frictionFactor;
+        player.velocity.z *= frictionFactor;
+    }
+
+    float airdragFactor = fmaxf(0.0f, 1.0f - player.airdrag * dt);
+    if(!player.ismoving && !player.grounded){
+        player.velocity.x *= airdragFactor;
+        player.velocity.z *= airdragFactor;
+    }
     
     player.position.x += player.velocity.x * dt;
 

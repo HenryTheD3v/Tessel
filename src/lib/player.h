@@ -14,6 +14,7 @@ typedef struct {
     float height;
     float gravity;
     float friction;
+    float airdrag;
 
     bool grounded;
     bool ismoving;

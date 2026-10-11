@@ -5,6 +5,7 @@
 #include "lib/gui.h"
 #include "lib/world.h"
 #include "lib/player.h"
+#include "lib/entity.h"
 #include <stdbool.h>
 #include <math.h>
 
@@ -19,6 +20,7 @@ int main(void)
     InitWindow(res.x, res.y, "Tessel");
     InitGUI();
     InitWorld();
+    InitEntities();
     DisableCursor();
 
     while (active)
@@ -28,7 +30,10 @@ int main(void)
         BeginMode3D(camera);
 
         UpdatePlayer();
+        UpdateEntities();
         DrawWorld();
+        DrawEntities();
+        
         BeginBlendMode(BLEND_ALPHA);
         Highlight();
         EndBlendMode();
@@ -39,6 +44,7 @@ int main(void)
     }
 
     CloseWindow();
+    UnloadEntities();
     UnloadGUI();
     UnloadWorld();
 
