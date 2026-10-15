@@ -36,6 +36,7 @@ float sprint = 1.5f;
 float x = 0;
 float y = 0;
 float z = 0;
+float heightn = 1.8f;
 
 float jumpheight = 8.0f;
 
@@ -127,20 +128,21 @@ void UpdatePlayer(void){
         }
     }
     if(IsKeyDown(KEY_LEFT_SHIFT)){
-        player.velocity.y -= acceleration * dt;
+        maxSpeed = maxSpeedn * 0.5f;
+        player.height = heightn * 0.8f;
+    } else if(IsKeyDown(KEY_LEFT_CONTROL)){
+        maxSpeed = maxSpeedn * sprint;
+    } else{
+        maxSpeed = maxSpeedn;
+        player.height = heightn;
     }
     if(IsKeyPressed(KEY_R)){
         player.position.x = spawn.x;
         player.position.y = spawn.y;
         player.position.z = spawn.z;
-        // player.velocity.x = 0;
-        // player.velocity.y = 0;
-        // player.velocity.z = 0;
-    }
-    if(IsKeyDown(KEY_LEFT_CONTROL)){
-        maxSpeed = maxSpeedn * sprint;
-    }else{
-        maxSpeed = maxSpeedn;
+        player.velocity.x = 0;
+        player.velocity.y = 0;
+        player.velocity.z = 0;
     }
     
     if(IsKeyDown(KEY_ESCAPE)){
